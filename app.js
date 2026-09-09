@@ -1,8 +1,4 @@
-document.getElementById("files").innerHTML =
-  "<p style='color:red;padding:20px;font-size:20px;'>APP JS OK</p>";
 const SUPABASE_URL = "https://smauzesoyhjndibtwsgm.supabase.co";
-
-// Yahan apna Supabase Publishable/Anon key paste karo
 const SUPABASE_KEY = "sb_publishable_hJgwNVRaNITwtH6ci-WjCg_UsUrIlFy";
 
 const supabase = window.supabase.createClient(
@@ -13,46 +9,50 @@ const supabase = window.supabase.createClient(
 let files = [];
 let selected = "all";
 
-function icon(type) {
-  if (type === "audio") return "🎵";
-  if (type === "video") return "🎬";
-  return "📄";
-}
-
 function getType(name) {
   const ext = name.split(".").pop().toLowerCase();
 
-  if (["mp3", "wav", "m4a", "aac", "ogg", "flac"].includes(ext)) {
+  if (["mp3", "wav", "m4a", "aac", "ogg", "flac"].includes(ext))
     return "audio";
-  }
 
-  if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
+  if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext))
     return "video";
-  }
 
-  if (ext === "pdf") {
+  if (ext === "pdf")
     return "pdf";
-  }
 
   return null;
 }
 
+function formatSize(bytes) {
+  if (!bytes) return "—";
+
+  if (bytes < 1024)
+    return bytes + " B";
+
+  if (bytes < 1024 * 1024)
+    return (bytes / 1024).toFixed(1) + " KB";
+
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
+
 async function loadFiles() {
+  const filesBox = document.getElementById("files");
+
+  filesBox.innerHTML =
+    "<p style='padding:20px;'>Loading files...</p>";
+
   const { data, error } = await supabase
     .storage
     .from("media")
     .list("", {
-      limit: 100,
-      sortBy: {
-        column: "created_at",
-        order: "desc"
-      }
+      limit: 100
     });
 
-    if (error) {
+  if (error) {
     console.error(error);
 
-    document.getElementById("files").innerHTML =
+    filesBox.innerHTML =
       `<p style="color:red;padding:20px;">
         Supabase Error: ${error.message}
       </p>`;
@@ -65,17 +65,16 @@ async function loadFiles() {
     .map(file => {
       const type = getType(file.name);
 
-      const { data: urlData } = supabase
-        .storage
-        .from("media")
-        .getPublicUrl(file.name);
+      const { data: urlData } =
+        supabase
+          .storage
+          .from("media")
+          .getPublicUrl(file.name);
 
       return {
         name: file.name,
         type: type,
-        size: file.metadata?.size
-          ? formatSize(file.metadata.size)
-          : "—",
+        size: formatSize(file.metadata?.size),
         url: urlData.publicUrl
       };
     });
@@ -83,12 +82,10 @@ async function loadFiles() {
   render();
 }
 
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + " B";
-  if (bytes < 1024 * 1024)
-    return (bytes / 1024).toFixed(1) + " KB";
-
-  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+function icon(type) {
+  if (type === "audio") return "🎵";
+  if (type === "video") return "🎬";
+  return "📄";
 }
 
 function render() {
@@ -97,32 +94,31 @@ function render() {
     .value
     .toLowerCase();
 
-  const list = files.filter(
-    f =>
-      (selected === "all" || f.type === selected) &&
-      f.name.toLowerCase().includes(q)
+  const list = files.filter(file =>
+    (selected === "all" || file.type === selected) &&
+    file.name.toLowerCase().includes(q)
   );
 
   document.getElementById("count").textContent =
     list.length + " files";
 
   document.getElementById("files").innerHTML =
-    list
-      .map(
-        f => `
-        <article class="file-card">
-          <div class="icon">${icon(f.type)}</div>
-          <h3>${f.name}</h3>
-          <div class="meta">
-            ${f.type.toUpperCase()} • ${f.size}
-          </div>
-          <button class="open" onclick="openFile('${f.url}')">
-            Open
-          </button>
-        </article>
-        `
-      )
-      .join("") || "<p>No files found.</p>";
+    list.map(file => `
+      <article class="file-card">
+        <div class="icon">${icon(file.type)}</div>
+
+        <h3>${file.name}</h3>
+
+        <div class="meta">
+          ${file.type.toUpperCase()} • ${file.size}
+        </div>
+
+        <button class="open"
+          onclick="openFile('${file.url}')">
+          Open
+        </button>
+      </article>
+    `).join("") || "<p>No files found.</p>";
 }
 
 function openFile(url) {
@@ -157,5 +153,4 @@ function closeAdmin() {
     .classList.add("hidden");
 }
 
-document.getElementById("files").innerHTML =
-  "<p style='color:red;padding:20px;font-size:20px;'>JavaScript OK</p>";
+loadFiles();
