@@ -155,4 +155,5 @@ function closeAdmin() {
     .classList.add("hidden");
 }
 
-loadFiles();
+document.getElementById("files").innerHTML =
+  "<p style='color:red;padding:20px;font-size:20px;'>JavaScript OK</p>";
