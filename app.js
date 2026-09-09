@@ -1,3 +1,5 @@
+document.getElementById("files").innerHTML =
+  "<p style='color:red;padding:20px;font-size:20px;'>APP JS OK</p>";
 const SUPABASE_URL = "https://smauzesoyhjndibtwsgm.supabase.co";
 
 // Yahan apna Supabase Publishable/Anon key paste karo
