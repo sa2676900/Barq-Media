@@ -47,10 +47,14 @@ async function loadFiles() {
       }
     });
 
-  if (error) {
+    if (error) {
     console.error(error);
+
     document.getElementById("files").innerHTML =
-      "<p>Files load nahi ho paaye.</p>";
+      `<p style="color:red;padding:20px;">
+        Supabase Error: ${error.message}
+      </p>`;
+
     return;
   }
 
