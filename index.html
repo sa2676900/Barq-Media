@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b6b2b">
+  <title>BARQ Media</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>BARQ <b>Media</b></span></div>
+    <button class="admin-btn" onclick="openAdmin()">🔐 Admin</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">YOUR MEDIA • ALWAYS WITH YOU</p>
+        <h1>Listen. Watch. <span>Read.</span></h1>
+        <p class="sub">A simple public library for your Audio, Video and PDF files.</p>
+        <div class="search"><span>🔎</span><input id="search" oninput="filterFiles()" placeholder="Search audio, video, pdf..."></div>
+      </div>
+      <div class="hero-mark">B</div>
+    </section>
+
+    <section class="categories">
+      <button class="cat active" data-type="all" onclick="setType('all', this)">All</button>
+      <button class="cat" data-type="audio" onclick="setType('audio', this)">🎵 Audio</button>
+      <button class="cat" data-type="video" onclick="setType('video', this)">▶ Video</button>
+      <button class="cat" data-type="pdf" onclick="setType('pdf', this)">📄 PDF</button>
+    </section>
+
+    <section class="section-head">
+      <h2>Latest Files</h2><span id="count"></span>
+    </section>
+    <section id="files" class="file-grid"></section>
+  </main>
+
+  <div id="adminModal" class="modal hidden">
+    <div class="modal-card">
+      <button class="close" onclick="closeAdmin()">×</button>
+      <h2>BARQ Media Admin</h2>
+      <p>Admin upload will be connected to secure storage in the next step.</p>
+      <label>Admin password</label>
+      <input type="password" id="adminPassword" placeholder="Enter password">
+      <button class="primary" onclick="demoLogin()">Continue</button>
+      <small>Public visitors never get upload permission.</small>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
